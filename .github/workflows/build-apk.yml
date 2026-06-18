@@ -15,19 +15,23 @@ jobs:
           java-version: '17'
 
       - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platforms;android-34 build-tools;34.0.0'
 
-      - name: Copy exam files into assets
+      - uses: gradle/actions/setup-gradle@v3
+
+      - name: Copy assets
         run: |
-          mkdir -p android-project/app/src/main/assets/icons
-          cp index.html android-project/app/src/main/assets/
-          cp -r icons/* android-project/app/src/main/assets/icons/
-          cp manifest.json android-project/app/src/main/assets/
-          cp sw.js android-project/app/src/main/assets/
+          mkdir -p apk/app/src/main/assets/icons
+          cp index.html apk/app/src/main/assets/
+          cp -r icons/* apk/app/src/main/assets/icons/
+          cp manifest.json apk/app/src/main/assets/
+          cp sw.js apk/app/src/main/assets/
 
-      - name: Build Debug APK
-        run: cd android-project && chmod +x gradlew && ./gradlew assembleDebug
+      - name: Build APK
+        run: cd apk && gradle assembleDebug
 
       - uses: actions/upload-artifact@v4
         with:
-          name: zhiyun-exam-debug
-          path: android-project/app/build/outputs/apk/debug/*.apk
+          name: zhiyun-exam-apk
+          path: apk/app/build/outputs/apk/debug/*.apk
